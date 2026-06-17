@@ -13,6 +13,8 @@ const elements = {
     refreshBtn: document.getElementById('refresh-btn'),
     refreshIcon: document.getElementById('refresh-icon'),
     exportCsvBtn: document.getElementById('export-csv-btn'),
+    themeToggleBtn: document.getElementById('theme-toggle-btn'),
+    themeIcon: document.getElementById('theme-icon'),
     lastUpdatedText: document.getElementById('last-updated-text'),
     searchInput: document.getElementById('search-input'),
     searchClearBtn: document.getElementById('search-clear-btn'),
@@ -41,6 +43,7 @@ const elements = {
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
     setupEventListeners();
     initProgressRing();
     fetchUpdates();
@@ -60,6 +63,9 @@ function setupEventListeners() {
     
     // Export Actions
     elements.exportCsvBtn.addEventListener('click', exportToCSV);
+    
+    // Theme Actions
+    elements.themeToggleBtn.addEventListener('click', toggleTheme);
     
     // Search Actions
     elements.searchInput.addEventListener('input', handleSearchInput);
@@ -500,4 +506,30 @@ function exportToCSV() {
     document.body.removeChild(link);
     
     showToast(`Exported ${filteredUpdates.length} updates to CSV!`, 'success');
+}
+
+// Initialize theme state from localStorage
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        elements.themeIcon.className = 'fa-regular fa-moon';
+    } else {
+        document.body.classList.remove('light-mode');
+        elements.themeIcon.className = 'fa-regular fa-sun';
+    }
+}
+
+// Toggle between Dark and Light themes
+function toggleTheme() {
+    const isLight = document.body.classList.toggle('light-mode');
+    if (isLight) {
+        localStorage.setItem('theme', 'light');
+        elements.themeIcon.className = 'fa-regular fa-moon';
+        showToast('Swapped to Light Theme', 'info');
+    } else {
+        localStorage.setItem('theme', 'dark');
+        elements.themeIcon.className = 'fa-regular fa-sun';
+        showToast('Swapped to Dark Theme', 'info');
+    }
 }

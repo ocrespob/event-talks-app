@@ -46,6 +46,77 @@
     --transition-fast: 0.15s ease;
     --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 0.4s ease;
+
+    /* Theme variable */
+    --progress-bg: rgba(255, 255, 255, 0.1);
+}
+
+/* Light Mode Theme Overrides */
+body.light-mode {
+    --bg-app: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc;
+    --bg-input: #f1f5f9;
+    --bg-modal: #ffffff;
+    
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    
+    --border-color: rgba(15, 23, 42, 0.08);
+    --border-color-hover: rgba(15, 23, 42, 0.15);
+    --glow-shadow: 0 0 20px rgba(59, 130, 246, 0.06);
+    
+    --progress-bg: rgba(15, 23, 42, 0.1);
+}
+
+body.light-mode {
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.06) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.04) 0px, transparent 50%);
+}
+
+body.light-mode .app-title {
+    background: linear-gradient(to right, #0f172a, #334155);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+body.light-mode .status-indicator,
+body.light-mode .filter-tag,
+body.light-mode .btn-secondary {
+    background: rgba(15, 23, 42, 0.03);
+}
+
+body.light-mode .filter-tag:hover,
+body.light-mode .btn-secondary:hover {
+    background: rgba(15, 23, 42, 0.07);
+}
+
+body.light-mode .filter-tag.active {
+    background: rgba(59, 130, 246, 0.06);
+    color: var(--accent-blue);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+body.light-mode .tweet-preview-card {
+    background: rgba(15, 23, 42, 0.01);
+}
+
+body.light-mode .preview-badge {
+    background-color: var(--bg-modal);
+}
+
+body.light-mode .tweet-preview-content {
+    color: #1f2937;
+}
+
+body.light-mode ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+}
+
+body.light-mode ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
 
 /* Reset & Global Styles */
@@ -739,6 +810,10 @@ body {
 /* Progress circle indicator matching Twitter */
 .progress-ring {
     transform: rotate(-90deg);
+}
+
+.progress-ring__circle-bg {
+    stroke: var(--progress-bg);
 }
 
 .progress-ring__circle {

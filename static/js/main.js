@@ -12,6 +12,7 @@ const CIRCUMFERENCE = 2 * Math.PI * 12; // 2 * PI * r (r=12) -> ~75.4
 const elements = {
     refreshBtn: document.getElementById('refresh-btn'),
     refreshIcon: document.getElementById('refresh-icon'),
+    exportCsvBtn: document.getElementById('export-csv-btn'),
     lastUpdatedText: document.getElementById('last-updated-text'),
     searchInput: document.getElementById('search-input'),
     searchClearBtn: document.getElementById('search-clear-btn'),
@@ -56,6 +57,9 @@ function setupEventListeners() {
     // Refresh Actions
     elements.refreshBtn.addEventListener('click', () => fetchUpdates(true));
     elements.retryBtn.addEventListener('click', () => fetchUpdates(true));
+    
+    // Export Actions
+    elements.exportCsvBtn.addEventListener('click', exportToCSV);
     
     // Search Actions
     elements.searchInput.addEventListener('input', handleSearchInput);
@@ -449,4 +453,51 @@ function showToast(message, type = 'info') {
             toast.remove();
         });
     }, 4000);
+}
+
+// Export Filtered Updates to CSV
+function exportToCSV() {
+    if (filteredUpdates.length === 0) {
+        showToast('No updates available to export.', 'error');
+        return;
+    }
+    
+    const headers = ['ID', 'Date', 'Type', 'Content Text', 'Link'];
+    const rows = filteredUpdates.map(update => [
+        update.id,
+        update.date,
+        update.type,
+        update.content_text,
+        update.link
+    ]);
+    
+    const escapeCSV = val => {
+        if (val === undefined || val === null) return '';
+        let formatted = String(val).replace(/"/g, '""');
+        if (formatted.includes(',') || formatted.includes('"') || formatted.includes('\n') || formatted.includes('\r')) {
+            formatted = `"${formatted}"`;
+        }
+        return formatted;
+    };
+    
+    const csvContent = [
+        headers.map(escapeCSV).join(','),
+        ...rows.map(row => row.map(escapeCSV).join(','))
+    ].join('\r\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const filterStr = currentFilter !== 'all' ? `_${currentFilter.toLowerCase()}` : '';
+    link.setAttribute("download", `bigquery_release_notes_${dateStr}${filterStr}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showToast(`Exported ${filteredUpdates.length} updates to CSV!`, 'success');
 }
